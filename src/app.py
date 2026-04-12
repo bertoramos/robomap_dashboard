@@ -18,5 +18,6 @@ with st.sidebar:
 pg = st.navigation([
     st.Page("pages/home.py", title="Home"),
     st.Page("pages/tables_view.py", title="Tables View"),
+    st.Page("pages/capture_view.py", title="Capture View")
 ])
 pg.run()
