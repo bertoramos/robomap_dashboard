@@ -18,7 +18,7 @@ with st.sidebar:
         st.info("No database loaded yet.")
 
 pg = st.navigation([
-    st.Page("pages/home.py", title="Manual"),
-    st.Page("pages/view.py", title="Tables View"),
+    st.Page("pages/home.py", title="Home"),
+    st.Page("pages/tables_view.py", title="Tables View"),
 ])
 pg.run()
