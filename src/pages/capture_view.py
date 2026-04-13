@@ -63,11 +63,10 @@ def heatmap_tab(captures_df):
 
     with col2:
         channel_options = sorted(captures_df["Channel"].dropna().unique().tolist())
-        channel_default = [37] if 37 in channel_options else ([channel_options[0]] if channel_options else [])
         selected_channels = st.multiselect(
             "Channel",
             channel_options,
-            default=channel_default,
+            default=channel_options,
         )
 
     with col3:
@@ -118,7 +117,7 @@ def summary_tab(captures_df):
     summary["Mac_count"] = summary["Mac"].apply(len)
     summary["Channel_count"] = summary["Channel"].apply(len)
     summary["Protocol_count"] = summary["Protocol"].apply(len)
-    
+
     st.write("Summary by Capture:")
     st.dataframe(summary)
 
