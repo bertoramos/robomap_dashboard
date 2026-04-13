@@ -224,6 +224,15 @@ def create_heatmap(points, background_image=None, width=900, height=600):
             v += step
         return ticks
 
+    x_range_real = (x_max - x_min) if (x_max - x_min) != 0 else 1.0
+    y_range_real = (y_max - y_min) if (y_max - y_min) != 0 else 1.0
+
+    # scaleratio para que 1 metro en X se vea igual que 1 metro en Y
+    # El eje X cubre 'width' unidades para x_range_real metros
+    # El eje Y cubre 'height' unidades para y_range_real metros
+    # scaleratio = (height * x_range_real) / (width * y_range_real)
+    scaleratio = (height * x_range_real) / (width * y_range_real)
+
     x_ticks_m = _nice_ticks(x_min, x_max)
     y_ticks_m = _nice_ticks(y_min, y_max)
 
@@ -251,6 +260,17 @@ def create_heatmap(points, background_image=None, width=900, height=600):
     x_ticktext = [f"{v:.2g}" for v in x_ticks_m]
     y_ticktext = [f"{v:.2g}" for v in y_ticks_m]
 
+    # Dimensiones de la figura proporcionales al rango real en metros
+    # Se fija el lado mayor a 800px y el menor se calcula con el ratio real
+    MAX_PX = 800
+    MARGIN_EXTRA = 160  # márgenes (l+r o t+b)
+    if y_range_real >= x_range_real:
+        fig_height = MAX_PX + MARGIN_EXTRA
+        fig_width  = int(MAX_PX * (x_range_real / y_range_real)) + MARGIN_EXTRA
+    else:
+        fig_width  = MAX_PX + MARGIN_EXTRA
+        fig_height = int(MAX_PX * (y_range_real / x_range_real)) + MARGIN_EXTRA
+
     fig.update_layout(
         title=dict(text=""),
         xaxis=dict(
@@ -260,6 +280,7 @@ def create_heatmap(points, background_image=None, width=900, height=600):
             tickvals=x_tickvals,
             ticktext=x_ticktext,
             scaleanchor="y",
+            scaleratio=scaleratio,
             constrain="domain",
             domain=[0, 1],
             showgrid=False,
@@ -274,9 +295,9 @@ def create_heatmap(points, background_image=None, width=900, height=600):
             domain=[0, 1],
             showgrid=False,
         ),
-        width=900,
-        height=int(900 * height / width),
-        margin=dict(l=50, r=10, t=10, b=80),
+        width=fig_width,
+        height=fig_height,
+        margin=dict(l=60, r=20, t=10, b=80),
         plot_bgcolor="white",
         # Botones interactivos
         updatemenus=[
